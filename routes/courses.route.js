@@ -21,7 +21,7 @@ router.route('/')
 
 router.route('/:courseId')
                 .get(coursecontloer.getSingleCourse)
-                .patch(coursecontloer.updateCourse) 
+                .patch(verifyToken,allowTo(roles.admin,roles.manger), coursecontloer.updateCourse) 
                 .delete(verifyToken,allowTo(roles.admin,roles.manger),coursecontloer.deleteCourse)
 
 

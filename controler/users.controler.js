@@ -46,7 +46,6 @@ const Register = asyncWraper(async (req, res, next) => {
 
   //generate JWT token
   const token =await generateJWT({email:newUser.email,id:newUser._id,role:newUser.role})
-  newUser.token = token
 
 
   await newUser.save();
@@ -63,7 +62,7 @@ const Login = asyncWraper(async (req, res, next) => {
     return next(new AppError("Email and password are required", 400, "fail"));
   }
 
-  const user = await model.findOne({ email });
+  const user = await model.findOne({ email }).select('+password');
   if (!user) {
    
     return next(new AppError("User not found", 404, "fail"));

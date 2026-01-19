@@ -7,7 +7,7 @@ const HttpStatusText = require('./Utiles/Http.status.text');
 const coursesRouter = require('./routes/courses.route');
 const usersRoter = require('./routes/User.route');
 const path = require('path')
-
+const helmet = require('helmet')
 
 const app = express();
 
@@ -15,7 +15,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/uploads',express.static(path.join(__dirname,'uploads')));
-
+app.use(helmet());
 // Routes
 app.use('/api/courses', coursesRouter);
 app.use('/api/users', usersRoter)// /api/users/register or /login

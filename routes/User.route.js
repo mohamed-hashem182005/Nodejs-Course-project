@@ -5,6 +5,8 @@ const verfiyToken = require('./middleware/verfayToken');
 //multer
 const  multer = require('multer');
 const AppError = require('../Utiles/app.error');
+const loginLimiter = require('./middleware/rateLimit');
+
 const diskStorge =multer.diskStorage({
     destination:function(req,file,cb){
         console.log("file",file);
@@ -27,7 +29,10 @@ const fileFilter = (req,file,cb)=>{
 }
 const upload = multer({
     storage: diskStorge,
-    fileFilter
+    fileFilter,
+    limits:{
+        fileSize:10 * 1024 *1024
+    }
 
 })
 
@@ -47,5 +52,5 @@ router.route('/register')
 
 
 router.route('/login')
-            .post(usersControler.Login)
+            .post(loginLimiter,usersControler.Login)
 module.exports=router;

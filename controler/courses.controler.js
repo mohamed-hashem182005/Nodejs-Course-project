@@ -31,12 +31,22 @@ const addCourse = asyncWrapper(async (req, res, next) => {
 });
 
 const updateCourse = asyncWrapper(async (req, res, next) => {
-  const course = await Course.updateOne(
-    { _id: req.params.courseId },
-    { $set: { ...req.body } }
+  const course = await Course.findByIdAndUpdate(
+    req.params.courseId,
+    req.body,
+    { new: true, runValidators: true }
   );
-  res.status(200).json({ status: Httpstatustext.SUCCESS, data: { course } });
+
+  if (!course) {
+    return next(appError.create("Course not found", 404, Httpstatustext.FAIL));
+  }
+
+  res.status(200).json({
+    status: Httpstatustext.SUCCESS,
+    data: { course }
+  });
 });
+
 
 const deleteCourse = asyncWrapper(async (req, res, next) => {
   const deleted = await Course.deleteOne({ _id: req.params.courseId });
