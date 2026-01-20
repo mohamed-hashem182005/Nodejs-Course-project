@@ -8,6 +8,7 @@ const coursesRouter = require('./routes/courses.route');
 const usersRoter = require('./routes/User.route');
 const path = require('path')
 const helmet = require('helmet')
+const { swaggerUi, swaggerSpec } = require("./swagger");
 
 const app = express();
 
@@ -19,6 +20,8 @@ app.use(helmet());
 // Routes
 app.use('/api/courses', coursesRouter);
 app.use('/api/users', usersRoter)// /api/users/register or /login
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // Not Found Handler
 app.all(/.*/, (req, res) => {
   res.status(404).json({
