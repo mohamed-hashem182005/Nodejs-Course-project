@@ -7,240 +7,182 @@
 تصميم RESTful: أساليب HTTP قياسية ورموز الحالة
 تنسيق JSON: جميع الطلبات والاستجابات تستخدم تنسيق JSON
 
-المصادقة
-تستخدم واجهة برمجة التطبيقات هذه مصادقة مفتاح API. قم بتضمين مفتاح API الخاص بك في رؤوس الطلب:
+https://nodejs-course-project-2.onrender.com/api/courses (get_all_Courses)   
 
 
-Plain Text
+Get All Courses
+Retrieves a complete list of all courses available in the system.
+Request Details
+Method: GET
+Endpoint: {{base_url}}/api/courses
+Authentication: Required (Bearer token)
 
+Query Parameters
+This endpoint supports optional query parameters for filtering and pagination:
+page (optional): Page number for pagination
+limit (optional): Number of courses per page
+sort (optional): Sort field (e.g., title, createdAt)
 
-
-
-
-
-
-
-Authorization: Bearer YOUR_API_KEY
-
-
-بالنسبة لنقاط نهاية معينة مثل التسجيل وتسجيل الدخول، قد لا تكون المصادقة مطلوبة. ستعيد نقاط النهاية المحمية حالة 401 Unauthorized إذا كان مفتاح API مفقودًا أو غير صالح.
-عنوان URL الأساسي
-يتم تخزين عنوان URL الأساسي لواجهة برمجة التطبيقات في المتغير ``. قم بتحديث هذا المتغير في بيئتك ليتطابق مع نشرك:
-التطوير: https://nodejs-course-project-2.onrender.com
-الإنتاج: قم بالتحديث إلى عنوان URL الإنتاجي الخاص بك
-
-دليل البدء السريع
-إعداد بيئتك: قم بتكوين متغير URL في بيئتك النشطة
-تسجيل مستخدم: استخدم نقطة نهاية التسجيل لإنشاء حساب جديد
-تسجيل الدخول: قم بالمصادقة باستخدام نقطة نهاية تسجيل الدخول لتلقي رمز API الخاص بك
-إدارة الدورات: استخدم الرمز للوصول إلى نقاط نهاية إدارة الدورات
-اختبار سير العمل: قم بتشغيل المجموعة لاختبار جميع نقاط النهاية بالتسلسل
-
-نقاط النهاية المتاحة
-نقاط نهاية الدورات التدريبية
-GET /api/courses - استرجاع جميع الدورات
-GET /api/courses/{id} - استرجاع دورة محددة بواسطة المعرف
-POST /api/courses - إنشاء دورة جديدة
-PATCH /api/courses/{id} - تحديث دورة موجودة
-DELETE /api/courses/{id} - حذف دورة
-
-نقاط نهاية المستخدمين
-POST /api/users/register - تسجيل حساب مستخدم جديد
-POST /api/users/login - تسجيل دخول المستخدم
-GET /api/users - استرجاع جميع المستخدمين (يتطلب صلاحيات المسؤول)
-
-تنسيقات الاستجابة
-استجابة ناجحة
-جميع الاستجابات الناجحة تتبع هذا التنسيق:
-
+Response Format
+Returns a JSON object with status and course data:
 
 JSON
 
-
-
-
-
-
-
-
-{
-  "status": "success",
-  "data": {
-    // بيانات الاستجابة هنا
-  }
-}
-
-
-استجابة خطأ
-استجابات الخطأ تتبع هذا التنسيق:
-
-
-JSON
-
-
-
-
-
-
-
-
-{
-  "status": "error",
-  "message": "وصف الخطأ",
-  "errors": [
-    // تفاصيل الأخطاء إن وجدت
-  ]
-}
-
-
-رموز حالة HTTP
-تستخدم واجهة برمجة التطبيقات رموز حالة HTTP القياسية:
-رموز النجاح (2xx)
-200 OK: تم تنفيذ الطلب بنجاح
-201 Created: تم إنشاء المورد بنجاح
-204 No Content: تم تنفيذ الطلب بنجاح بدون محتوى للإرجاع
-
-رموز أخطاء العميل (4xx)
-400 Bad Request: طلب غير صالح أو بيانات مفقودة
-401 Unauthorized: مصادقة مفقودة أو غير صالحة
-403 Forbidden: المستخدم لا يملك الصلاحيات المطلوبة
-404 Not Found: المورد المطلوب غير موجود
-422 Unprocessable Entity: فشل التحقق من صحة البيانات
-
-رموز أخطاء الخادم (5xx)
-500 Internal Server Error: حدث خطأ في الخادم
-503 Service Unavailable: الخدمة غير متاحة مؤقتًا
-
-أمثلة الاستخدام
-مثال 1: تسجيل مستخدم جديد
-
-
-JavaScript
-
-
-
-
-
-
-
-
-// الطلب
-POST /api/users/register
-Content-Type: application/json
-{
-  "name": "أحمد محمد",
-  "email": "ahmed@example.com",
-  "password": "SecurePass123!",
-  "confirmPassword": "SecurePass123!"
-}
-// الاستجابة
-{
-  "status": "success",
-  "data": {
-    "user": {
-      "_id": "user_id",
-      "name": "أحمد محمد",
-      "email": "ahmed@example.com"
-    },
-    "token": "jwt_token_here"
-  }
-}
-
-
-مثال 2: إنشاء دورة جديدة
-
-
-JavaScript
-
-
-
-
-
-
-
-
-// الطلب
-POST /api/courses
-Authorization: Bearer YOUR_TOKEN
-Content-Type: application/json
-{
-  "title": "مقدمة في تطوير الويب",
-  "description": "تعلم أساسيات تطوير الويب",
-  "instructor": "محمد أحمد",
-  "duration": "8 أسابيع",
-  "price": 149.99
-}
-// الاستجابة
-{
-  "status": "success",
-  "data": {
-    "course": {
-      "_id": "course_id",
-      "title": "مقدمة في تطوير الويب",
-      "description": "تعلم أساسيات تطوير الويب",
-      "instructor": "محمد أحمد",
-      "duration": "8 أسابيع",
-      "price": 149.99
-    }
-  }
-}
-
-
-مثال 3: استرجاع جميع الدورات
-
-
-JavaScript
-
-
-
-
-
-
-
-
-// الطلب
-GET /api/courses
-Authorization: Bearer YOUR_TOKEN
-// الاستجابة
 {
   "status": "success",
   "data": {
     "courses": [
       {
-        "_id": "course_id_1",
-        "title": "دورة 1",
-        "description": "وصف الدورة"
-      },
-      {
-        "_id": "course_id_2",
-        "title": "دورة 2",
-        "description": "وصف الدورة"
-      }
-    ]
+        "_id": "course_id",
+        "title": "Course Title"
+        } 
+}
+
+
+Use Cases
+Display all available courses in a course catalog
+Retrieve course listings for administrative dashboards
+Export course data for reporting purposes
+Populate dropdown menus or selection lists
+
+Status Codes
+200 OK: Successfully retrieved courses
+401 Unauthorized: Missing or invalid authentication token
+500 Internal Server Error: Server error occurred
+
+  GET
+Get_single_course  {{URl}}/api/courses/68cb75ce194b3d493e9c5501
+Get Single Course
+Retrieves detailed information about a specific course by its unique identifier.
+Request Details
+Method: GET
+Endpoint: {{base_url}}/api/courses/{id}
+Authentication: Required (Bearer token)
+
+Path Parameters
+id (required): The unique identifier of the course to retrieve
+Type: String (MongoDB ObjectId format)
+Example: 68c7a3e2353f0865cc09f3fa
+
+
+Response Format
+Returns a JSON object with the course details:
+
+
+JSON
+
+
+
+{
+  "status": "success",
+  "data": {
+    "course": {
+      "_id": "68c7a3e2353f0865cc09f3fa",
+      "title": "Course Title"
+      "createdAt": "2024-01-15T10:30:00Z",
+      "updatedAt": "2024-01-15T10:30:00Z"
+    }
   }
 }
 
 
-معلومات إضافية
-التقسيم إلى صفحات (Pagination)
-تدعم نقاط النهاية التي تعيد قوائم التقسيم إلى صفحات باستخدام معاملات الاستعلام:
-page: رقم الصفحة (افتراضي: 1)
-limit: عدد العناصر في الصفحة (افتراضي: 10)
+Use Cases
+Display full course details on a course page
+Retrieve course information for editing
+Verify course existence before enrollment
+Fetch course data for analytics
 
-الفرز (Sorting)
-يمكن فرز النتائج باستخدام معامل sort:
-sort=title: الفرز حسب العنوان
-sort=-createdAt: الفرز حسب تاريخ الإنشاء (تنازلي)
+Status Codes
+200 OK: Successfully retrieved the course
+401 Unauthorized: Missing or invalid authentication token
+404 Not Found: Course with specified ID does not exist
+500 Internal Server Error: Server error occurred
+  
+/api/courses      (POST
+Add_Course)
 
-التصفية (Filtering)
-يمكن تصفية النتائج باستخدام معاملات الاستعلام المختلفة حسب نقطة النهاية.
-الأمان والخصوصية
-جميع كلمات المرور يتم تشفيرها قبل التخزين
-الرموز المميزة (Tokens) صالحة لفترة محدودة
-يجب استخدام HTTPS في بيئة الإنتاج
-لا يتم إرجاع المعلومات الحساسة في الاستجابات
 
-الدعم والمساعدة
-للحصول على المساعدة أو الإبلاغ عن المشكلات، يرجى الاتصال بفريق الدعم أو مراجعة الوثائق الكاملة.
-الإصدار
-الإصدار الحالي: 1.0.0
+Add New Course
+Creates a new course in the system with the provided information.
+Request Details
+Method: POST
+Endpoint: {{base_url}}/api/courses
+Authentication: Required (Bearer token with admin privileges)
+Content-Type: application/json
+
+Request Body
+All fields are required unless marked as optional:
+
+
+JSON
+
+
+
+
+
+
+
+
+{
+  "title": "Introduction to Web Development",
+  "description": "Learn the fundamentals of web development including HTML, CSS, and JavaScript",
+  "instructor": "John Doe",
+  "duration": "8 weeks",
+  "price": 149.99,
+  "category": "Web Development",
+  "level": "Beginner",
+  "prerequisites": "None" // optional
+}
+
+
+Required Fields
+title: Course title (string, 3-200 characters)
+description: Detailed course description (string)
+instructor: Name of the course instructor (string)
+duration: Course duration (string, e.g., "8 weeks", "40 hours")
+
+Optional Fields
+price: Course price (number)
+category: Course category (string)
+level: Difficulty level (string: Beginner, Intermediate, Advanced)
+prerequisites: Required knowledge or courses (string)
+
+Response Format
+Returns the newly created course with generated ID:
+
+
+JSON
+
+
+
+
+
+
+
+
+{
+  "status": "success",
+  "data": {
+    "course": {
+      "_id": "generated_course_id",
+      "title": "Introduction to Web Development",
+      "description": "Learn the fundamentals...",
+      "instructor": "John Doe",
+      "createdAt": "2024-01-15T10:30:00Z",
+      "updatedAt": "2024-01-15T10:30:00Z"
+    }
+  }
+}
+
+
+Status Codes
+201 Created: Course successfully created
+400 Bad Request: Invalid or missing required fields
+401 Unauthorized: Missing or invalid authentication token
+403 Forbidden: User lacks admin privileges
+500 Internal Server Error: Server error occurred
+
+
+
+
+    
