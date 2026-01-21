@@ -6,6 +6,66 @@ const verfiyToken = require('./middleware/verfayToken');
 const  multer = require('multer');
 const AppError = require('../Utiles/app.error');
 const loginLimiter = require('./middleware/rateLimit');
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: Users authentication & management
+ */
+
+/**
+ * @swagger
+ * /users/register:
+ *   post:
+ *     summary: Register new user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             $ref: '#/components/schemas/UserRegister'
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ */
+router.post(
+  "/register",
+  upload.single("avatar"),
+  usersControler.Register
+);
+
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: Login user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UserLogin'
+ *     responses:
+ *       200:
+ *         description: Login successful and JWT returned
+ */
+router.post("/login", usersControler.Login);
+
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Users fetched successfully
+ */
+router.get("/", verfiyToken, usersControler.getAllUsers);
 
 const diskStorge =multer.diskStorage({
     destination:function(req,file,cb){
